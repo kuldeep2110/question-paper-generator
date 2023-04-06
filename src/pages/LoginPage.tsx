@@ -14,6 +14,7 @@ import {
 import { notifications } from "@mantine/notifications";
 import { useAuth } from "../firebase/contexts/AuthContext";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { NavLink as MantineLink } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
 interface LoginPageProps {}
@@ -45,8 +46,16 @@ const LoginPage: FC<LoginPageProps> = ({}) => {
     setLoading(false);
   };
 
+  const nextNavigate = useNavigate();
+
   return (
-    <Container size={420} my={40}>
+    <Container size={420} my={150}>
+      <MantineLink
+        label="Back"
+        className="w-28 text-blue-500 bg-none"
+        href="/"
+        component="a"
+      />
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={handleSubmit}>
           <TextInput
@@ -69,7 +78,13 @@ const LoginPage: FC<LoginPageProps> = ({}) => {
               Forgot password?
             </Anchor>
           </Group>
-          <Button loading={loading} type="submit" fullWidth mt="xl">
+          <Button
+            loading={loading}
+            type="submit"
+            fullWidth
+            mt="xl"
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             Log in
           </Button>
         </form>

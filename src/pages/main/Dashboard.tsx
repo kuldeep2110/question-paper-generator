@@ -1,7 +1,7 @@
 import { notifications } from "@mantine/notifications";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../firebase/contexts/AuthContext";
+import { useAuth } from "../../firebase/contexts/AuthContext";
 
 interface DashboardProps {}
 

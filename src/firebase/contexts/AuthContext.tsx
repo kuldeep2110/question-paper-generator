@@ -1,5 +1,6 @@
 import React, { FC, useContext, useState, ReactNode, useEffect } from "react";
 import { auth } from "../config";
+import { Loader } from "@mantine/core";
 import {
   signInWithEmailAndPassword,
   signOut,
@@ -55,6 +56,14 @@ export const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     login,
     logout,
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center  justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={value}>
