@@ -8,7 +8,7 @@ const SharedLayout: FC<SharedLayoutProps> = ({}) => {
   return (
     <main className="bg-gradient-to-r from-neutral-800 via-gray-900 to-fuchsia-950 min-h-screen w-screen">
       <Navbar />
-      <section className="text-white h-[90vh]">
+      <section className="text-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <Outlet />
         </div>

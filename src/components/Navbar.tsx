@@ -40,7 +40,7 @@ const Navbar: FC<NavbarProps> = ({}) => {
 
   if (!currentUser) {
     return (
-      <Disclosure as="nav" className="shadow-2xl">
+      <Disclosure as="nav" className="">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -89,12 +89,14 @@ const Navbar: FC<NavbarProps> = ({}) => {
                     <NavLink
                       key={item.name}
                       to={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-900 text-white"
-                          : "text-white  hover:bg-gray-700 hover:text-white",
-                        "rounded-md px-3 py-2 text-lg font-bold"
-                      )}
+                      className={({ isActive }) =>
+                        classNames(
+                          isActive
+                            ? " text-green-500"
+                            : "text-gray-400 hover:text-white",
+                          "rounded-md px-4 py-2 text-base font-medium"
+                        )
+                      }
                       aria-current={item.current ? "page" : undefined}
                     >
                       {item.name}
@@ -244,19 +246,6 @@ const Navbar: FC<NavbarProps> = ({}) => {
                             )}
                           >
                             Your Profile
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Settings
                           </a>
                         )}
                       </Menu.Item>
