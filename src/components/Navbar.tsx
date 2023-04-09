@@ -79,7 +79,7 @@ const Navbar: FC<NavbarProps> = ({}) => {
                       />
                     </svg>
 
-                    <span className="text-white text-2xl font-bold ml-6 font-sans">
+                    <span className="text-white text-2xl ml-6 font-sans">
                       Exam Generator
                     </span>
                   </div>
