@@ -1,6 +1,6 @@
 import { FC } from "react";
 import LargeHeading from "../../../components/ui/LargeHeading";
-import QuestionForm from "../../../components/ui/QuestionForm";
+import QuestionForm from "../../../components/QuestionForm";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Group } from "@mantine/core";
 import PinkButton from "../../../components/ui/PinkButton";

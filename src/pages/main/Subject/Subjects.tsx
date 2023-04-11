@@ -1,11 +1,36 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import LargeHeading from "../../../components/ui/LargeHeading";
-import RadixDialog from "../../../components/ui/Dialog";
-import { SimpleGrid } from "@mantine/core";
+import RadixDialog from "../../../components/Dialog";
+import SubjectList from "../../../components/SubjectList";
+import { useAuth } from "../../../supabase/AuthContext";
+import { supabase } from "../../../supabase/supabaseClient";
 
 interface SubjectPropsProps {}
 
 const SubjectProps: FC<SubjectPropsProps> = ({}) => {
+  // const { currentUser } = useAuth();
+
+  // const [subjects, setSubjects] = useState([]);
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  // const fetchSubjects = async () => {
+  // const { data, error } = await supabase
+  //   .from("subjects")
+  //   .select("*")
+  //   .eq("college_id", currentUser?.uid);
+
+  //     if (error) {
+  //       console.log(error);
+  //     } else {
+  //       setSubjects(data);
+  //       setLoading(false);
+  //     }
+  // };
+
+  //   fetchSubjects();
+  // }, []);
+
   return (
     <div>
       <div className="flex justify-center">
@@ -22,43 +47,7 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
 
       <div className="pt-12 pb-6 flex justify-center">
         {/* list of subjects with name, no of modules and total questions and clicking it takes to questions filtered with that subject and nice colours with hovering */}
-        <SimpleGrid
-          cols={4}
-          spacing={30}
-          className="w-full max-w-[1200px] p-8"
-          breakpoints={[
-            { maxWidth: "62rem", cols: 3, spacing: "md" },
-            { maxWidth: "48rem", cols: 2, spacing: "sm" },
-            { maxWidth: "36rem", cols: 1, spacing: "sm" },
-          ]}
-        >
-          <div className="bg-[#1b1a24] hover:bg-[#211F2D] shadow-fuchsia-900 shadow-[0_0_0_1px] rounded-[6px] p-[20px] cursor-pointer">
-            <div className="text-[20px] font-medium text-mauve5">
-              Operating Systems
-            </div>
-            <div className="mt-10">
-              <div className="text-[15px] text-mauve11 mt-[10px]">
-                5 modules
-              </div>
-              <div className="text-[15px] text-mauve11 mt-[10px]">
-                100 questions
-              </div>
-            </div>
-          </div>
-          <div className="bg-[#1b1a24] hover:bg-[#211F2D] shadow-fuchsia-900 shadow-[0_0_0_1px] rounded-[6px] p-[20px] cursor-pointer">
-            <div className="text-[20px] font-medium text-mauve5">
-              Operating Systems
-            </div>
-            <div className="mt-10">
-              <div className="text-[15px] text-mauve11 mt-[10px]">
-                5 modules
-              </div>
-              <div className="text-[15px] text-mauve11 mt-[10px]">
-                100 questions
-              </div>
-            </div>
-          </div>
-        </SimpleGrid>
+        <SubjectList />
       </div>
     </div>
   );

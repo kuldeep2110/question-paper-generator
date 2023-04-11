@@ -1,7 +1,5 @@
-import { FC } from "react";
-import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import { supabase } from "../../supabase/supabaseClient";
+import { FC } from "react";
 
 interface RadixDialogProps {
   title: string;
