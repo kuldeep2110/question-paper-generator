@@ -20,6 +20,11 @@ const AddQuestion: FC<AddQuestionProps> = ({}) => {
           size="lg"
           closeOnClickOutside={false}
           opened={opened}
+          overlayProps={{
+            color: "#000",
+            opacity: 0.55,
+            blur: 3,
+          }}
           onClose={close}
           title="Add Question"
         >

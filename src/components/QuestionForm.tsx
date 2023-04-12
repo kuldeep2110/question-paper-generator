@@ -19,77 +19,78 @@ const QuestionForm: FC<QuestionFormProps> = ({}) => {
   };
 
   return (
-    <div>
-      <form onSubmit={submitHandler}>
-        <div>
-          <Textarea
-            label="Question"
-            placeholder="Enter the question here"
-            autosize
-            minRows={2}
-            aria-label="My textarea"
-            withAsterisk
-            value={questionValue}
-            onChange={(event) => setquestionValue(event.currentTarget.value)}
-          />
-        </div>
-        <div className="pt-2">
-          <FileInput
-            label="Question requires an Image? (Optional)"
-            placeholder="Add an image(png or jpeg)"
-            icon={IconUpload}
-            value={fileValue}
-            accept="image/png,image/jpeg"
-            onChange={setfileValue}
-          />
-        </div>
-        <div className="pt-2">
-          <Select
-            withAsterisk
-            label="Subject?"
-            placeholder="Pick one"
-            data={[
-              { value: "Operating Systems", label: "Operating Systems" },
-              { value: "ng", label: "Angular" },
-              { value: "svelte", label: "" },
-              { value: "vue", label: "Vue" },
-            ]}
-          />
-        </div>
-        <div className="pt-2">
-          <Select
-            withAsterisk
-            label="Module?"
-            placeholder="Pick one"
-            data={[
-              { value: "1", label: "1" },
-              { value: "2", label: "2" },
-              { value: "3", label: "3" },
-              { value: "4", label: "4" },
-            ]}
-          />
-        </div>
-        <div className="pt-2">
-          <NumberInput
-            label="Marks?"
-            placeholder="Enter marks"
-            withAsterisk
-            min={1}
-            max={10}
-            value={marksValue}
-            onChange={setmarksValue}
-          />
-        </div>
-        <div className="pt-4 flex justify-end">
-          <button
-            type="submit"
-            className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded"
-          >
-            Submit
-          </button>
-        </div>
-      </form>
-    </div>
+    <form onSubmit={submitHandler}>
+      <div className="">
+        <label className="text-gray-700 text-sm font-bold mb-2">Question</label>
+        <Textarea
+          placeholder="Enter the question here"
+          autosize
+          minRows={2}
+          aria-label="My textarea"
+          required
+          withAsterisk
+          value={questionValue}
+          onChange={(event) => setquestionValue(event.currentTarget.value)}
+        />
+      </div>
+      <div className="pt-2">
+        <label className="text-gray-700 text-sm font-bold mb-2">
+          Upload File
+        </label>
+        <FileInput
+          placeholder="Add an image(png or jpeg)"
+          icon={IconUpload}
+          value={fileValue}
+          accept="image/png,image/jpeg"
+          onChange={setfileValue}
+        />
+      </div>
+      <div className="pt-2">
+        <label className="text-gray-700 text-sm font-bold mb-2">Subject</label>
+        <Select
+          withAsterisk
+          placeholder="Pick one"
+          data={[
+            { value: "Operating Systems", label: "Operating Systems" },
+            { value: "ng", label: "Angular" },
+            { value: "svelte", label: "" },
+            { value: "vue", label: "Vue" },
+          ]}
+        />
+      </div>
+      <div className="pt-2">
+        <label className="text-gray-700 text-sm font-bold mb-2">Module</label>
+        <Select
+          withAsterisk
+          placeholder="Pick one"
+          data={[
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
+          ]}
+        />
+      </div>
+      <div className="pt-2">
+        <label>Marks</label>
+        <NumberInput
+          placeholder="Enter marks"
+          withAsterisk
+          min={1}
+          max={10}
+          value={marksValue}
+          onChange={setmarksValue}
+        />
+      </div>
+      <div className="pt-4 flex justify-end">
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
   );
 };
 
