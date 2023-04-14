@@ -1,18 +1,18 @@
 import { FC, useEffect } from "react";
 import { useState } from "react";
-import { LoadingOverlay, Textarea } from "@mantine/core";
+import { LoadingOverlay, Textarea, TextInput } from "@mantine/core";
 import { FileInput } from "@mantine/core";
 import { Select } from "@mantine/core";
 import { NumberInput } from "@mantine/core";
-import { supabase } from "../supabase/supabaseClient";
-import { Subject, User, Question } from "../utils/types";
-import { NumberToArray } from "../utils/NumberToArray";
-import { SelectSubject } from "../utils/SelectSubject";
+import { supabase } from "../../supabase/supabaseClient";
+import { Subject, User, Question } from "../../utils/types";
+import { NumberToArray } from "../../utils/NumberToArray";
+import { SelectSubject } from "../../utils/SelectSubject";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconExclamationCircle, IconX } from "@tabler/icons-react";
 import { PostgrestError } from "@supabase/supabase-js";
 import { StorageError } from "@supabase/storage-js";
-import { getSupabaseErrorMessage } from "../utils/getErrorMessage";
+import { getSupabaseErrorMessage } from "../../utils/getErrorMessage";
 
 interface QuestionFormProps {
   subjects: Subject[];
@@ -25,7 +25,8 @@ const QuestionForm: FC<QuestionFormProps> = ({
   userDetails,
   closeModal,
 }) => {
-  const [questionValue, setquestionValue] = useState("");
+  const [titleValue, settitleValue] = useState<string>("");
+  const [questionValue, setquestionValue] = useState<string>("");
   const [fileValue, setfileValue] = useState<File | null>(null);
   const [subjectValue, setsubjectValue] = useState<string | null>(null);
   const [moduleValue, setmoduleValue] = useState<string | null>(null);
@@ -41,9 +42,33 @@ const QuestionForm: FC<QuestionFormProps> = ({
       return;
     }
 
-    if (!questionValue || !subjectValue || !moduleValue || !marksValue) {
+    if (
+      !questionValue ||
+      !subjectValue ||
+      !moduleValue ||
+      !marksValue ||
+      !titleValue
+    ) {
       notifications.show({
         message: "Please fill all the fields",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    if (titleValue.length > 75) {
+      notifications.show({
+        message: "Title should be less than 75 characters",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    if (marksValue < 1 || marksValue > 15) {
+      notifications.show({
+        message: "Marks should be between 1 and 15",
         icon: <IconExclamationCircle />,
         color: "red",
       });
@@ -101,6 +126,7 @@ const QuestionForm: FC<QuestionFormProps> = ({
     const orgNameValue = userDetails.org_id;
 
     const question: Question = {
+      title: titleValue,
       question: questionValue,
       marks: marksValue,
       module: parseInt(moduleValue),
@@ -124,8 +150,9 @@ const QuestionForm: FC<QuestionFormProps> = ({
       }
 
       if (file && filePath && status === 201) {
-        const { data: fileUploadData, error: fileUploadError } =
-          await supabase.storage.from("question_image").upload(filePath, file);
+        const { error: fileUploadError } = await supabase.storage
+          .from("question_image")
+          .upload(filePath, file);
 
         if (fileUploadError) {
           await supabase
@@ -136,6 +163,7 @@ const QuestionForm: FC<QuestionFormProps> = ({
         }
       }
 
+      settitleValue("");
       setquestionValue("");
       setfileValue(null);
       setsubjectValue(null);
@@ -170,21 +198,35 @@ const QuestionForm: FC<QuestionFormProps> = ({
         <LoadingOverlay visible={loading} />
         <div className="flex flex-col">
           <div className="flex flex-col">
+            <TextInput
+              label={
+                <label className="text-gray-700 text-sm font-bold mb-2">
+                  Title
+                </label>
+              }
+              placeholder="Enter Title/Topic of the question here"
+              value={titleValue}
+              withAsterisk
+              onChange={(event) => settitleValue(event.currentTarget.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col pt-4">
             <Textarea
               label={
                 <label className="text-gray-700 text-sm font-bold mb-2">
                   Question
                 </label>
               }
-              placeholder="Enter your question here"
+              placeholder="Enter your question here..."
               value={questionValue}
               autosize
+              minRows={2}
               withAsterisk
               onChange={(event) => setquestionValue(event.currentTarget.value)}
               required
             />
           </div>
-
           <div className="flex flex-col pt-4">
             <FileInput
               label={

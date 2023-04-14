@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import LargeHeading from "../../../components/ui/LargeHeading";
-import QuestionForm from "../../../components/QuestionForm";
+import QuestionForm from "../../../components/questions/QuestionForm";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Group, Loader } from "@mantine/core";
-import DisplayQuestions from "../../../components/DisplayQuestions";
+import DisplayQuestions from "../../../components/questions/DisplayQuestions";
 import { supabase } from "../../../supabase/supabaseClient";
 import { useAuth } from "../../../firebase/contexts/AuthContext";
 import { Subject, User, Question } from "../../../utils/types";
+import { questions } from "../../../mockdata/QuestionsMockdata";
 
 interface AddQuestionProps {}
 
@@ -102,7 +103,7 @@ const AddQuestion: FC<AddQuestionProps> = ({}) => {
       {/* display questions */}
 
       <div>
-        <DisplayQuestions />
+        <DisplayQuestions questions={questions} />
       </div>
     </div>
   );

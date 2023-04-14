@@ -17,6 +17,7 @@ export interface User {
 export interface Question {
   id?: string | null;
   created_at?: string;
+  title: string;
   question: string;
   marks: number;
   subject_id: string;
@@ -25,3 +26,5 @@ export interface Question {
   module: number;
   img_url: string | null;
 }
+
+

@@ -21,7 +21,7 @@ const SubjectList: FC<SubjectListProps> = ({ subjects }) => {
       {subjects.map((subject) => (
         <div
           key={subject.id}
-          className="bg-[#1b1a24] hover:bg-[#211F2D] shadow-fuchsia-900 shadow-[0_0_0_1px] rounded-[6px] p-[20px] cursor-pointer"
+          className="bg-[#1b1a24] hover:bg-[#211F2D] shadow-neutral-600 shadow-[0_0_0_1px] rounded-[6px] p-[20px] cursor-pointer"
         >
           <div className="text-[20px] font-medium text-mauve5">
             {subject.subject_name}
