@@ -8,7 +8,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import "./index.css";
 import Profile from "./pages/Profile";
 import AddSubject from "./pages/main/Subject/Subjects";
-import AddQuestion from "./pages/main/Question/AddQuestion";
+import AddQuestion from "./pages/main/Question/Question";
 import Generate from "./pages/main/Generate/Generate";
 
 function App() {

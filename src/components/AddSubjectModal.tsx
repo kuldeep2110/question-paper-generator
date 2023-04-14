@@ -1,12 +1,15 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { FC, useState } from "react";
 import { useAuth } from "../firebase/contexts/AuthContext";
-import { Subject } from "../pages/main/Subject/Subjects";
+import { Subject } from "../utils/types";
 import { supabase } from "../supabase/supabaseClient";
-import { Button } from "@mantine/core";
 import { LoadingOverlay } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { PostgrestError } from "@supabase/supabase-js";
+import { IconCheck, IconExclamationCircle, IconX } from "@tabler/icons-react";
+import { getSupabaseErrorMessage } from "../utils/getErrorMessage";
 
-interface RadixDialogProps {
+interface AddSubjectModalProps {
   title: string;
   description: string;
   name: string;
@@ -14,7 +17,7 @@ interface RadixDialogProps {
   addSubject: (subject: Subject) => void;
 }
 
-const RadixDialog: FC<RadixDialogProps> = ({
+const AddSubjectModal: FC<AddSubjectModalProps> = ({
   title,
   description,
   name,
@@ -22,36 +25,94 @@ const RadixDialog: FC<RadixDialogProps> = ({
   addSubject,
 }) => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [subname, setsubname] = useState("linear algebra");
-  const [no_of_modules, setNo_of_modules] = useState(5);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [subname, setsubname] = useState<string>("linear algebra");
+  const [no_of_modules, setNo_of_modules] = useState<number>(5);
   const { currentUser } = useAuth();
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!subname || !no_of_modules) return;
-    if (subname.length > 40 || no_of_modules > 20) return;
-    setLoading(true);
-    try {
-      const { data: college, error: fetchUserErr } = await supabase
-        .from("users")
-        .select("org_name")
-        .eq("email", currentUser?.email);
-      if (fetchUserErr) {
-        console.log(" fetch user error in add subject", fetchUserErr);
-      } else {
-        const subject: Subject = {
-          subject_name: subname,
-          no_of_modules: no_of_modules,
-          org_name: college[0].org_name,
-        };
-        await addSubject(subject);
-        setOpen(false);
-      }
-    } catch (error) {
-      console.error("An error occurred while adding the subject", error);
+
+    if (!subname || !no_of_modules) {
+      notifications.show({
+        message: "Please fill all the fields",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
     }
-    setLoading(false);
+
+    if (!currentUser) {
+      notifications.show({
+        message: "Please login to add subject",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    // no of modules should be a number
+    if (isNaN(no_of_modules)) {
+      notifications.show({
+        title: "Please enter valid values",
+        message: "No of modules should be a number",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    if (subname.length > 50 || no_of_modules > 30) {
+      notifications.show({
+        title: "Please enter valid values",
+        message:
+          "Subject name should be less than 50 characters and no of modules should be less than 30",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data: fetchedUser, error: fetchUserErr } = await supabase
+        .from("users")
+        .select("org_id")
+        .eq("email", currentUser?.email);
+
+      if (fetchUserErr) {
+        console.log("fetch user error in add subject", fetchUserErr);
+        throw fetchUserErr;
+      }
+
+      const subject: Subject = {
+        subject_name: subname,
+        no_of_modules: no_of_modules,
+        org_id: fetchedUser[0].org_id,
+      };
+
+      await addSubject(subject);
+
+      notifications.show({
+        title: "Success!",
+        message: "Subject added successfully",
+        color: "teal",
+        icon: <IconCheck />,
+      });
+
+      setOpen(false);
+    } catch (error: PostgrestError | any) {
+      console.error("An error occurred while adding the subject", error);
+      notifications.show({
+        title: "Error!",
+        message: getSupabaseErrorMessage(error),
+        color: "red",
+        icon: <IconX />,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -77,11 +138,13 @@ const RadixDialog: FC<RadixDialogProps> = ({
                 className="text-violet11 w-[90px] text-right text-[15px]"
                 htmlFor="name"
               >
-                {name}
+                {name} *
               </label>
               <input
+                required
                 className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                 id="name"
+                type={"text"}
                 onChange={(e) => {
                   setsubname(e.target.value);
                 }}
@@ -98,9 +161,8 @@ const RadixDialog: FC<RadixDialogProps> = ({
               <input
                 className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
                 id="username"
-                onChange={(e) => {
-                  setNo_of_modules(parseInt(e.target.value));
-                }}
+                type={"number"}
+                onChange={(e) => setNo_of_modules(e.target.valueAsNumber)}
                 value={no_of_modules}
               />
             </fieldset>
@@ -127,4 +189,4 @@ const RadixDialog: FC<RadixDialogProps> = ({
   );
 };
 
-export default RadixDialog;
+export default AddSubjectModal;

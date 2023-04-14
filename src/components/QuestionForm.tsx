@@ -1,114 +1,287 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useState } from "react";
-import { Textarea } from "@mantine/core";
+import { LoadingOverlay, Textarea } from "@mantine/core";
 import { FileInput } from "@mantine/core";
 import { Select } from "@mantine/core";
 import { NumberInput } from "@mantine/core";
+import { supabase } from "../supabase/supabaseClient";
+import { Subject, User, Question } from "../utils/types";
+import { NumberToArray } from "../utils/NumberToArray";
+import { SelectSubject } from "../utils/SelectSubject";
+import { notifications } from "@mantine/notifications";
+import { IconCheck, IconExclamationCircle, IconX } from "@tabler/icons-react";
+import { PostgrestError } from "@supabase/supabase-js";
+import { StorageError } from "@supabase/storage-js";
+import { getSupabaseErrorMessage } from "../utils/getErrorMessage";
 
-interface QuestionFormProps {}
+interface QuestionFormProps {
+  subjects: Subject[];
+  userDetails: User | null;
+  closeModal: () => void;
+}
 
-const QuestionForm: FC<QuestionFormProps> = ({}) => {
+const QuestionForm: FC<QuestionFormProps> = ({
+  subjects,
+  userDetails,
+  closeModal,
+}) => {
   const [questionValue, setquestionValue] = useState("");
   const [fileValue, setfileValue] = useState<File | null>(null);
+  const [subjectValue, setsubjectValue] = useState<string | null>(null);
+  const [moduleValue, setmoduleValue] = useState<string | null>(null);
   const [marksValue, setmarksValue] = useState<number | "">(1);
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const [loading, setLoading] = useState(false);
+
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(questionValue);
-    console.log(fileValue);
+
+    if (!userDetails) {
+      notifications.show({ message: "User not found" });
+      return;
+    }
+
+    if (!questionValue || !subjectValue || !moduleValue || !marksValue) {
+      notifications.show({
+        message: "Please fill all the fields",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    if (isNaN(marksValue)) {
+      notifications.show({
+        title: "Please enter valid values",
+        message: "Marks should be a number",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    if (fileValue && fileValue.size > 10000000) {
+      notifications.show({
+        title: "Please enter valid values",
+        message: "File size should be less than 10MB",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    // file should be an image
+    if (fileValue && !fileValue.type.includes("image")) {
+      notifications.show({
+        title: "Please enter valid values",
+        message: "File should be an image",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    // question value should be less than 1000 characters
+    if (questionValue.length > 1000) {
+      notifications.show({
+        title: "Please enter valid values",
+        message: "Question should be less than 1000 characters",
+        icon: <IconExclamationCircle />,
+        color: "red",
+      });
+      return;
+    }
+
+    const file = fileValue;
+    const fileExt = file ? file.name.split(".").pop() : null;
+    const fileName = file ? `${Math.random()}.${fileExt}` : null;
+    const filePath = file ? `${fileName}` : null;
+
+    const authorValue = userDetails.id;
+    const orgNameValue = userDetails.org_id;
+
+    const question: Question = {
+      question: questionValue,
+      marks: marksValue,
+      module: parseInt(moduleValue),
+      subject_id: subjectValue,
+      author_id: authorValue,
+      org_id: orgNameValue,
+      img_url: filePath,
+    };
+
+    setLoading(true);
+
+    try {
+      const {
+        data: insertedQuestion,
+        error: insertError,
+        status,
+      } = await supabase.from("questions").insert(question).select();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      if (file && filePath && status === 201) {
+        const { data: fileUploadData, error: fileUploadError } =
+          await supabase.storage.from("question_image").upload(filePath, file);
+
+        if (fileUploadError) {
+          await supabase
+            .from("questions")
+            .delete()
+            .eq("id", insertedQuestion[0].id);
+          throw fileUploadError;
+        }
+      }
+
+      setquestionValue("");
+      setfileValue(null);
+      setsubjectValue(null);
+      setmoduleValue(null);
+      setmarksValue(1);
+
+      notifications.show({
+        title: "Success",
+        message: "Question added successfully",
+        icon: <IconCheck size="1.1rem" />,
+        color: "teal",
+      });
+
+      // close modal
+      closeModal();
+    } catch (error: PostgrestError | StorageError | any) {
+      notifications.show({
+        title: "Cannot add question",
+        message: getSupabaseErrorMessage(error),
+        color: "red",
+        icon: <IconX size="1.1rem" />,
+      });
+      console.log("add subject error", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <div className="">
-        <label className="text-gray-700 text-sm font-bold mb-2">Question</label>
-        <Textarea
-          placeholder="Enter the question here"
-          autosize
-          minRows={2}
-          aria-label="My textarea"
-          required
-          withAsterisk
-          value={questionValue}
-          onChange={(event) => setquestionValue(event.currentTarget.value)}
-        />
-      </div>
-      <div className="pt-2">
-        <label className="text-gray-700 text-sm font-bold mb-2">
-          Upload File
-        </label>
-        <FileInput
-          placeholder="Add an image(png or jpeg)"
-          icon={IconUpload}
-          value={fileValue}
-          accept="image/png,image/jpeg"
-          onChange={setfileValue}
-        />
-      </div>
-      <div className="pt-2">
-        <label className="text-gray-700 text-sm font-bold mb-2">Subject</label>
-        <Select
-          withAsterisk
-          placeholder="Pick one"
-          data={[
-            { value: "Operating Systems", label: "Operating Systems" },
-            { value: "ng", label: "Angular" },
-            { value: "svelte", label: "" },
-            { value: "vue", label: "Vue" },
-          ]}
-        />
-      </div>
-      <div className="pt-2">
-        <label className="text-gray-700 text-sm font-bold mb-2">Module</label>
-        <Select
-          withAsterisk
-          placeholder="Pick one"
-          data={[
-            { value: "1", label: "1" },
-            { value: "2", label: "2" },
-            { value: "3", label: "3" },
-            { value: "4", label: "4" },
-          ]}
-        />
-      </div>
-      <div className="pt-2">
-        <label>Marks</label>
-        <NumberInput
-          placeholder="Enter marks"
-          withAsterisk
-          min={1}
-          max={10}
-          value={marksValue}
-          onChange={setmarksValue}
-        />
-      </div>
-      <div className="pt-4 flex justify-end">
-        <button
-          type="submit"
-          className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded"
-        >
-          Submit
-        </button>
-      </div>
-    </form>
+    <>
+      <form onSubmit={submitHandler}>
+        <LoadingOverlay visible={loading} />
+        <div className="flex flex-col">
+          <div className="flex flex-col">
+            <Textarea
+              label={
+                <label className="text-gray-700 text-sm font-bold mb-2">
+                  Question
+                </label>
+              }
+              placeholder="Enter your question here"
+              value={questionValue}
+              autosize
+              withAsterisk
+              onChange={(event) => setquestionValue(event.currentTarget.value)}
+              required
+            />
+          </div>
+
+          <div className="flex flex-col pt-4">
+            <FileInput
+              label={
+                <label className="text-gray-700 text-sm font-bold mb-2">
+                  Image
+                </label>
+              }
+              placeholder="Upload image"
+              accept="image/*"
+              value={fileValue}
+              onChange={setfileValue}
+            />
+          </div>
+
+          <div className="flex flex-col pt-4">
+            <Select
+              required
+              label={
+                <label className="text-gray-700 text-sm font-bold mb-2">
+                  Subject
+                </label>
+              }
+              withAsterisk
+              placeholder="Select subject"
+              data={subjects.map((subject) => {
+                return { label: subject.subject_name, value: subject.id! };
+              })}
+              value={subjectValue}
+              onChange={setsubjectValue}
+            />
+          </div>
+
+          <div className="flex flex-col pt-4">
+            <Select
+              required
+              label={
+                <label className="text-gray-700 text-sm font-bold mb-2">
+                  Module
+                </label>
+              }
+              withAsterisk
+              placeholder="Select Module"
+              data={
+                subjectValue
+                  ? NumberToArray(
+                      SelectSubject(subjects, subjectValue)!.no_of_modules
+                    )
+                  : []
+              }
+              value={moduleValue}
+              onChange={setmoduleValue}
+            />
+          </div>
+
+          <div className="flex flex-col pt-4">
+            <NumberInput
+              label={
+                <label className="text-gray-700 text-md font-bold mb-2">
+                  Marks
+                </label>
+              }
+              placeholder="Enter marks"
+              value={marksValue}
+              onChange={setmarksValue}
+              min={1}
+              withAsterisk
+              required
+            />
+          </div>
+
+          {/* <div className="flex flex-col pt-4">
+          <label className="text-gray-700 text-sm font-bold mb-2">
+            Difficulty
+          </label>
+          <Select
+            placeholder="Select difficulty"
+            data={[
+              { label: "Easy", value: "easy" },
+              { label: "Medium", value: "medium" },
+              { label: "Hard", value: "hard" },
+            ]}
+          />
+        </div> */}
+
+          {/* submit button */}
+          <div className="flex justify-center pt-4">
+            <button
+              type="submit"
+              className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </>
   );
 };
-
-const IconUpload = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={1.5}
-    stroke="currentColor"
-    className="w-6 h-6"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-    />
-  </svg>
-);
 
 export default QuestionForm;

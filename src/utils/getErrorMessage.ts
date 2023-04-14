@@ -1,4 +1,6 @@
-export function getErrorMessage(error: any): string {
+import { PostgrestError } from "@supabase/supabase-js";
+
+export function getFirebaseErrorMessage(error: any): string {
   switch (error.code) {
     case "auth/invalid-email":
       return "Invalid email address";
@@ -10,4 +12,20 @@ export function getErrorMessage(error: any): string {
     default:
       return "An error occurred. Please try again later.";
   }
+}
+
+export function getSupabaseErrorMessage(error: PostgrestError) {
+  if (error.details != null) {
+    if (error.code === "23505") {
+      const matchResult = error.details.match(/\((.*?)\)=\((.*?)\)/);
+      if (matchResult != null) {
+        const key = matchResult[1];
+        const value = matchResult[2];
+        return `The ${key} "${value}" already exists. Please choose a different ${key}.`;
+      }
+    }
+    return error.details;
+  }
+
+  return "An error occurred. Please try again later.";
 }

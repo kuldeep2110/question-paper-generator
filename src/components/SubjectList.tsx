@@ -1,8 +1,6 @@
 import { FC } from "react";
 import { SimpleGrid } from "@mantine/core";
-import { Subject } from "../pages/main/Subject/Subjects";
-import { Skeleton } from "@mantine/core";
-import { blackA } from "@radix-ui/colors";
+import { Subject } from "../utils/types";
 
 interface SubjectListProps {
   subjects: Subject[];

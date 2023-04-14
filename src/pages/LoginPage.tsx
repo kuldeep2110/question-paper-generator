@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useAuth } from "../firebase/contexts/AuthContext";
-import { getErrorMessage } from "../utils/getErrorMessage";
+import { getFirebaseErrorMessage } from "../utils/getErrorMessage";
 import BlueButton from "../components/ui/BlueButton";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,7 @@ const LoginPage: FC<LoginPageProps> = ({}) => {
       navigate("/dashboard");
     } catch (error: any) {
       console.log(error);
-      const errorMessage = getErrorMessage(error);
+      const errorMessage = getFirebaseErrorMessage(error);
       notifications.show({
         title: "Error",
         message: errorMessage,

@@ -1,20 +1,17 @@
 import { FC, useEffect, useState } from "react";
 import LargeHeading from "../../../components/ui/LargeHeading";
-import RadixDialog from "../../../components/Dialog";
+import AddSubjectModal from "../../../components/AddSubjectModal";
 import SubjectList from "../../../components/SubjectList";
 import { useAuth } from "../../../firebase/contexts/AuthContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { Loader } from "@mantine/core";
+import { Subject } from "../../../utils/types";
+import { PostgrestError } from "@supabase/supabase-js";
+import { notifications } from "@mantine/notifications";
+import { getSupabaseErrorMessage } from "../../../utils/getErrorMessage";
+import { IconX } from "@tabler/icons-react";
 
 interface SubjectPropsProps {}
-
-export interface Subject {
-  id?: string;
-  created_at?: string;
-  subject_name: string;
-  no_of_modules: number;
-  org_name: number;
-}
 
 const SubjectProps: FC<SubjectPropsProps> = ({}) => {
   const [loading, setLoading] = useState(false);
@@ -23,33 +20,56 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
 
   const fetchSubjects = async () => {
     setLoading(true);
-    const { data: college, error: fetchUserErr } = await supabase
-      .from("users")
-      .select("org_name")
-      .eq("email", currentUser?.email);
-    if (fetchUserErr) {
-      console.log(" fetch user error in fetch subj", fetchUserErr);
-    } else {
-      const { data, error } = await supabase
-        .from("subjects")
-        .select("*")
-        .eq("org_name", college[0].org_name);
-      if (error) {
-        console.log("fetch subjects error", error);
-      } else {
-        setSubjects(data as Subject[]);
+
+    try {
+      const { data: user, error: fetchUserErr } = await supabase
+        .from("users")
+        .select("org_id")
+        .eq("email", currentUser?.email);
+
+      if (fetchUserErr) {
+        console.log(" fetch user error in fetch subj", fetchUserErr);
+        throw fetchUserErr;
       }
+
+      const { data: fetchSubjectsData, error: fetchSubjectsError } =
+        await supabase
+          .from("subjects")
+          .select("*")
+          .eq("org_id", user[0].org_id);
+
+      if (fetchSubjectsError) {
+        console.log("fetch subjects error in fetch subj", fetchSubjectsError);
+        throw fetchSubjectsError;
+      }
+
+      setSubjects(fetchSubjectsData as Subject[]);
+    } catch (error: PostgrestError | any) {
+      console.log("error in fetch subjects", error);
+      notifications.show({
+        title: "Error",
+        message: getSupabaseErrorMessage(error),
+        color: "red",
+        icon: <IconX />,
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const addSubject = async (subject: Subject) => {
-    const { data, error } = await supabase.from("subjects").insert(subject);
-    if (error) {
-      console.log("error in adding subject", error);
-    } else if (data) {
-      setSubjects((prev) => [...prev, data[0]]);
+    const { data: insertedSubject, error: newSubjectInsertError } =
+      await supabase.from("subjects").insert(subject);
+
+    if (newSubjectInsertError) {
+      console.log("error in adding subject", newSubjectInsertError);
+      throw newSubjectInsertError;
     }
+
+    if (insertedSubject) {
+      setSubjects((prev) => [...prev, insertedSubject[0]]);
+    }
+
     fetchSubjects();
   };
 
@@ -65,15 +85,15 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
       {/* TODO: */}
 
       {/* ONLY ADMIN USERS CAN DO THIS EG: ORGANISATION ACCOUNTS, NO TEACHERS */}
-      {/* <div className="pt-6 flex justify-center">
-        <RadixDialog
+      <div className="pt-6 flex justify-center">
+        <AddSubjectModal
           addSubject={addSubject}
           title="Add Course"
           description="Add a new Course to the database. Click save when you're done."
           name="Name"
           username="No of modules"
         />
-      </div> */}
+      </div>
 
       <div className="pt-12 pb-6 flex justify-center">
         {/* list of subjects with name, no of modules and total questions and clicking it takes to questions filtered with that subject and nice colours with hovering */}
