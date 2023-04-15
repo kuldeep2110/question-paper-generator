@@ -15,7 +15,7 @@ export interface User {
 }
 
 export interface Question {
-  id?: string | null;
+  id: string;
   created_at?: string;
   title: string;
   question: string;
@@ -27,4 +27,7 @@ export interface Question {
   img_url: string | null;
 }
 
-
+export enum LayoutType {
+  Grid,
+  List,
+}

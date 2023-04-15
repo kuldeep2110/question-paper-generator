@@ -8,50 +8,43 @@ interface SubjectListProps {
 
 const SubjectList: FC<SubjectListProps> = ({ subjects }) => {
   return (
-    <SimpleGrid
-      cols={4}
-      spacing={30}
-      className="w-full max-w-[1200px] p-8"
-      breakpoints={[
-        { maxWidth: "62rem", cols: 3, spacing: "md" },
-        { maxWidth: "48rem", cols: 2, spacing: "sm" },
-        { maxWidth: "36rem", cols: 1, spacing: "sm" },
-      ]}
-    >
+    <div className="w-full max-w-[1200px] mx-auto p-8 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {subjects.map((subject) => (
         <div
           key={subject.id}
-          className="bg-[#1b1a24] hover:bg-[#211F2D] shadow-neutral-600 shadow-[0_0_0_1px] rounded-[6px] p-[20px] cursor-pointer"
+          className="bg-gray-700 hover:bg-gray-600 shadow-lg rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1"
         >
-          <div className="text-[20px] font-medium text-mauve5">
-            {subject.subject_name}
-          </div>
-          <div className="flex justify-between items-end">
-            <div className="mt-10">
-              <div className="text-[15px] text-mauve11 mt-[10px]">
-                {subject.no_of_modules} Modules
+          <div className="p-6">
+            <h2 className="text-xl font-semibold text-white mb-2">
+              {subject.subject_name}
+            </h2>
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-sm text-gray-400">
+                  {subject.no_of_modules} Modules
+                </p>
               </div>
-            </div>
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                />
-              </svg>
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6 text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       ))}
-    </SimpleGrid>
+    </div>
   );
 };
 

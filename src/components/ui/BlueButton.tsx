@@ -1,11 +1,11 @@
 import { FC } from "react";
 
-interface MyButtonProps {
+interface BlueButtonProps {
   onClick?: () => void;
   children: React.ReactNode;
 }
 
-const MyButton: FC<MyButtonProps> = ({ onClick, children }) => {
+const BlueButton: FC<BlueButtonProps> = ({ onClick, children }) => {
   return (
     <button
       type="submit"
@@ -17,4 +17,4 @@ const MyButton: FC<MyButtonProps> = ({ onClick, children }) => {
   );
 };
 
-export default MyButton;
+export default BlueButton;
