@@ -43,7 +43,7 @@ const LoginPage: FC<LoginPageProps> = ({}) => {
   };
 
   return (
-    <div className="bg-gray-800 min-h-screen w-screen">
+    <div className="bg-slate-200 min-h-screen w-screen">
       <div className="w-[500px] m-auto pt-20 ">
         <div onClick={() => navigate("/")}>
           <BlueButton>

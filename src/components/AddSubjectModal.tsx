@@ -166,19 +166,14 @@ const AddSubjectModal: FC<AddSubjectModalProps> = ({
               />
             </fieldset>
             <div className="mt-[25px] flex justify-end">
-              <button
-                className="text-violet11 shadow-blackA7 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-fuchsia-200 px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none"
-                type="submit"
-              >
-                Submit
-              </button>
+              <CyanButton>Submit</CyanButton>
             </div>
             <Dialog.Close asChild>
               <button
                 className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
                 aria-label="Close"
               >
-                x
+                X
               </button>
             </Dialog.Close>
           </form>

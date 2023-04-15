@@ -8,9 +8,14 @@ import QuestionForm from "./QuestionForm";
 interface AddQuestionProps {
   subjects: Subject[];
   user: User | null;
+  fetchUser_Questions_Subjects: () => Promise<void>;
 }
 
-const AddQuestion: FC<AddQuestionProps> = ({ subjects, user }) => {
+const AddQuestion: FC<AddQuestionProps> = ({
+  subjects,
+  user,
+  fetchUser_Questions_Subjects,
+}) => {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -31,6 +36,7 @@ const AddQuestion: FC<AddQuestionProps> = ({ subjects, user }) => {
           closeModal={close}
           subjects={subjects}
           userDetails={user}
+          fetchUser_Questions_Subjects={fetchUser_Questions_Subjects}
         />
       </Modal>
       <CyanButton onClick={open}>

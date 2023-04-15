@@ -1,19 +1,15 @@
 import { FC, useState } from "react";
-import { LayoutType, Question, Subject, User } from "../../utils/types";
+import { LayoutType, Question, SubjectQuestionJoin } from "../../utils/types";
 import QuestionCard from "./QuestionCard";
 import QuestionDetails from "./QuestionDetails";
 
 type DisplayQuestionsProps = {
-  questions: Question[];
-  subjects: Subject[];
-  user: User | null;
+  subjectsWithQuestions: SubjectQuestionJoin[];
   layoutType: LayoutType;
 };
 
 const DisplayQuestions: FC<DisplayQuestionsProps> = ({
-  questions,
-  subjects,
-  user,
+  subjectsWithQuestions,
   layoutType,
 }) => {
   const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
@@ -35,26 +31,32 @@ const DisplayQuestions: FC<DisplayQuestionsProps> = ({
              * Render questions as grid items
              */
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {questions.map((question) => (
-                <QuestionCard
-                  key={question.id}
-                  question={question}
-                  onClick={() => setSelectedQuestion(question)}
-                />
-              ))}
+              {subjectsWithQuestions.map((subject) =>
+                subject.questions.map((question) => (
+                  <QuestionCard
+                    key={question.id}
+                    question={question}
+                    subject_name={subject.subject_name}
+                    onClick={() => setSelectedQuestion(question)}
+                  />
+                ))
+              )}
             </div>
           ) : (
             /**
              * Render questions as list items
              */
             <div>
-              {questions.map((question) => (
-                <QuestionCard
-                  key={question.id}
-                  question={question}
-                  onClick={() => setSelectedQuestion(question)}
-                />
-              ))}
+              {subjectsWithQuestions.map((subject) =>
+                subject.questions.map((question) => (
+                  <QuestionCard
+                    key={question.id}
+                    question={question}
+                    subject_name={subject.subject_name}
+                    onClick={() => setSelectedQuestion(question)}
+                  />
+                ))
+              )}
             </div>
           )}
         </div>

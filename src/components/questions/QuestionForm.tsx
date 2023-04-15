@@ -13,17 +13,20 @@ import { IconCheck, IconExclamationCircle, IconX } from "@tabler/icons-react";
 import { PostgrestError } from "@supabase/supabase-js";
 import { StorageError } from "@supabase/storage-js";
 import { getSupabaseErrorMessage } from "../../utils/getErrorMessage";
+import CyanButton from "../ui/CyanButton";
 
 interface QuestionFormProps {
   subjects: Subject[];
   userDetails: User | null;
   closeModal: () => void;
+  fetchUser_Questions_Subjects: () => Promise<void>;
 }
 
 const QuestionForm: FC<QuestionFormProps> = ({
   subjects,
   userDetails,
   closeModal,
+  fetchUser_Questions_Subjects,
 }) => {
   const [titleValue, settitleValue] = useState<string>("");
   const [questionValue, setquestionValue] = useState<string>("");
@@ -57,9 +60,9 @@ const QuestionForm: FC<QuestionFormProps> = ({
       return;
     }
 
-    if (titleValue.length > 25) {
+    if (titleValue.length > 50) {
       notifications.show({
-        message: "Title should be less than 25 characters",
+        message: "Title should be less than 50 characters",
         icon: <IconExclamationCircle />,
         color: "red",
       });
@@ -179,6 +182,9 @@ const QuestionForm: FC<QuestionFormProps> = ({
 
       // close modal
       closeModal();
+
+      // fetch user questions and subjects
+      await fetchUser_Questions_Subjects();
     } catch (error: PostgrestError | StorageError | any) {
       notifications.show({
         title: "Cannot add question",
@@ -313,12 +319,7 @@ const QuestionForm: FC<QuestionFormProps> = ({
 
           {/* submit button */}
           <div className="flex justify-center pt-4">
-            <button
-              type="submit"
-              className="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Submit
-            </button>
+            <CyanButton>Submit</CyanButton>
           </div>
         </div>
       </form>

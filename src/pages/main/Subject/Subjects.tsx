@@ -47,7 +47,7 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
     } catch (error: PostgrestError | any) {
       console.log("error in fetch subjects", error);
       notifications.show({
-        title: "Error",
+        title: "Error!",
         message: getSupabaseErrorMessage(error),
         color: "red",
         icon: <IconX />,
@@ -66,9 +66,9 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
       throw newSubjectInsertError;
     }
 
-    if (insertedSubject) {
-      setSubjects((prev) => [...prev, insertedSubject[0]]);
-    }
+    // if (insertedSubject) {
+    //   setSubjects((prev) => [...prev, insertedSubject[0]]);
+    // }
 
     fetchSubjects();
   };

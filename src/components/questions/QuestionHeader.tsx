@@ -1,14 +1,14 @@
-import { FC, useState } from "react";
-import { Subject, User } from "../../utils/types";
+import { FC } from "react";
+import { LayoutType, Subject, User } from "../../utils/types";
 import CyanButton from "../ui/CyanButton";
 import AddQuestion from "./AddQuestion";
-import { LayoutType } from "../../utils/types";
 
 interface QuestionHeaderProps {
   subjects: Subject[];
   user: User | null;
   layoutType: LayoutType;
   toggleLayout: () => void;
+  fetchUser_Questions_Subjects: () => Promise<void>;
 }
 
 const QuestionHeader: FC<QuestionHeaderProps> = ({
@@ -16,10 +16,11 @@ const QuestionHeader: FC<QuestionHeaderProps> = ({
   user,
   toggleLayout,
   layoutType,
+  fetchUser_Questions_Subjects,
 }) => {
   return (
     <>
-      <div className="flex flex-col gap-6 md:flex-row justify-between items-center mb-4">
+      <div className="flex flex-col gap-6 md:flex-row justify-between items-center mb-4 font-sans">
         <h1 className="text-4xl font-bold">Questions</h1>
         <div className="flex items-center gap-4">
           <div className="hidden md:block">
@@ -34,7 +35,11 @@ const QuestionHeader: FC<QuestionHeaderProps> = ({
               </div>
             </CyanButton>
           </div>
-          <AddQuestion subjects={subjects} user={user} />
+          <AddQuestion
+            fetchUser_Questions_Subjects={fetchUser_Questions_Subjects}
+            subjects={subjects}
+            user={user}
+          />
         </div>
       </div>
     </>
