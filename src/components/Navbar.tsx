@@ -45,44 +45,10 @@ const Navbar: FC<NavbarProps> = ({}) => {
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
               <div className="relative flex h-20 items-center justify-between">
-                <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                  <div
-                    className="flex flex-shrink-0 items-center cursor-pointer"
-                    onClick={() => navigate("/")}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="block h-8 w-auto lg:hidden bg-blue-300 rounded-full p-1"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="hidden h-8 w-auto lg:block bg-blue-300 rounded-full p-1"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"
-                      />
-                    </svg>
-
-                    <span className="text-white text-2xl ml-6 font-sans">
-                      Exam Generator
-                    </span>
-                  </div>
+                <div className="cursor-pointer" onClick={() => navigate("/")}>
+                  <span className="text-cyan-600 hover:underline text-3xl font-bold tracking-wider">
+                    QPG
+                  </span>
                 </div>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                   {unauthNavigation.map((item) => (
@@ -92,8 +58,8 @@ const Navbar: FC<NavbarProps> = ({}) => {
                       className={({ isActive }) =>
                         classNames(
                           isActive
-                            ? " text-green-500"
-                            : "text-gray-400 hover:text-white",
+                            ? "text-cyan-500"
+                            : "text-white hover:text-cyan-500 hover:bg-gray-700",
                           "rounded-md px-4 py-2 text-base font-medium"
                         )
                       }
@@ -133,7 +99,7 @@ const Navbar: FC<NavbarProps> = ({}) => {
   }
 
   return (
-    <Disclosure as="nav" className="">
+    <Disclosure as="nav">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -150,38 +116,10 @@ const Navbar: FC<NavbarProps> = ({}) => {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div
-                  className="flex flex-shrink-0 items-center cursor-pointer"
-                  onClick={() => navigate("/")}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="block h-8 w-auto lg:hidden bg-blue-300 rounded-full p-1"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"
-                    />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="hidden h-8 w-auto lg:block bg-blue-300 rounded-full p-1"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"
-                    />
-                  </svg>
+                <div className="cursor-pointer" onClick={() => navigate("/")}>
+                  <span className="text-cyan-600 hover:underline text-3xl font-bold tracking-wider">
+                    QPG
+                  </span>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
@@ -192,9 +130,9 @@ const Navbar: FC<NavbarProps> = ({}) => {
                         className={({ isActive }) =>
                           classNames(
                             isActive
-                              ? " text-green-500"
-                              : "text-gray-400 hover:text-white",
-                            "rounded-md px-4 py-2 text-base font-medium"
+                              ? " text-cyan-500 bg-gray-700"
+                              : "text-slate-300 hover:text-white",
+                            "rounded-3xl px-4 py-2 text-sm font-medium tracking-wide"
                           )
                         }
                         aria-current={item.current ? "page" : undefined}
