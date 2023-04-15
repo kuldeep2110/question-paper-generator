@@ -63,6 +63,18 @@ const Question: FC<QuestionProps> = ({}) => {
     fetchUserAndSubjects();
   }, []);
 
+  /**
+   * TODO: Implement pagination
+   * TODO: Implement search
+   * TODO: Implement filter
+   * TODO: Implement sort
+   * TODO: Implement loading state
+   * TODO: Implement error state
+   * TODO: Implement empty state
+   * TODO: Implement skeleton loader
+   * TODO: Implement question details
+   */
+
   return (
     <>
       <div className="flex flex-col pt-2 pb-4 px-2 max-w-5xl m-auto ">

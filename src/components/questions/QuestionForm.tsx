@@ -57,9 +57,9 @@ const QuestionForm: FC<QuestionFormProps> = ({
       return;
     }
 
-    if (titleValue.length > 75) {
+    if (titleValue.length > 25) {
       notifications.show({
-        message: "Title should be less than 75 characters",
+        message: "Title should be less than 25 characters",
         icon: <IconExclamationCircle />,
         color: "red",
       });

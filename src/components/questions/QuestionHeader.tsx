@@ -19,19 +19,21 @@ const QuestionHeader: FC<QuestionHeaderProps> = ({
 }) => {
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold">Questions</h1>
+      <div className="flex flex-col gap-6 md:flex-row justify-between items-center mb-4">
+        <h1 className="text-4xl font-bold">Questions</h1>
         <div className="flex items-center gap-4">
-          <CyanButton
-            onClick={() => {
-              toggleLayout();
-            }}
-          >
-            <div className="flex items-center justify-center gap-2">
-              {layoutType === LayoutType.Grid ? "List View" : "Grid View"}
-              <i>{SWITCH_ICON}</i>
-            </div>
-          </CyanButton>
+          <div className="hidden md:block">
+            <CyanButton
+              onClick={() => {
+                toggleLayout();
+              }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                {layoutType === LayoutType.Grid ? "List View" : "Grid View"}
+                <i>{SWITCH_ICON}</i>
+              </div>
+            </CyanButton>
+          </div>
           <AddQuestion subjects={subjects} user={user} />
         </div>
       </div>
