@@ -58,9 +58,9 @@ const Navbar: FC<NavbarProps> = ({}) => {
                       className={({ isActive }) =>
                         classNames(
                           isActive
-                            ? "text-cyan-500"
-                            : "text-white hover:text-cyan-500 hover:bg-gray-700",
-                          "rounded-md px-4 py-2 text-base font-medium"
+                            ? " text-cyan-500 bg-gray-700"
+                            : "text-slate-300 hover:text-white hover:bg-gray-700",
+                          "rounded-3xl px-4 py-2 text-sm font-medium tracking-wide"
                         )
                       }
                       aria-current={item.current ? "page" : undefined}
@@ -131,7 +131,7 @@ const Navbar: FC<NavbarProps> = ({}) => {
                           classNames(
                             isActive
                               ? " text-cyan-500 bg-gray-700"
-                              : "text-slate-300 hover:text-white",
+                              : "text-slate-300 hover:text-white hover:bg-gray-700",
                             "rounded-3xl px-4 py-2 text-sm font-medium tracking-wide"
                           )
                         }

@@ -1,24 +1,30 @@
 import { FC, useState } from "react";
-import { LayoutType, Question, SubjectQuestionJoin } from "../../utils/types";
+import {
+  LayoutType,
+  SubjectQuestionJoin,
+  QuestionAuthorJoin,
+} from "../../utils/types";
 import QuestionCard from "./QuestionCard";
 import QuestionDetails from "./QuestionDetails";
 
 type DisplayQuestionsProps = {
   subjectsWithQuestions: SubjectQuestionJoin[];
   layoutType: LayoutType;
+  selectQuestion: SelectQuestion;
 };
+
+interface SelectQuestion {
+  selectedQuestion: QuestionAuthorJoin | null;
+  setSelectedQuestion: (question: QuestionAuthorJoin | null) => void;
+  handleBack: () => void;
+}
 
 const DisplayQuestions: FC<DisplayQuestionsProps> = ({
   subjectsWithQuestions,
   layoutType,
+  selectQuestion,
 }) => {
-  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>(
-    null
-  );
-
-  const handleBack = () => {
-    setSelectedQuestion(null);
-  };
+  const { selectedQuestion, setSelectedQuestion, handleBack } = selectQuestion;
 
   return (
     <>
@@ -32,7 +38,7 @@ const DisplayQuestions: FC<DisplayQuestionsProps> = ({
              */
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {subjectsWithQuestions.map((subject) =>
-                subject.questions.map((question) => (
+                subject.questions.map((question: QuestionAuthorJoin) => (
                   <QuestionCard
                     key={question.id}
                     question={question}

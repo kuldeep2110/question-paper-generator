@@ -5,7 +5,7 @@ import SubjectList from "../../../components/SubjectList";
 import { useAuth } from "../../../firebase/contexts/AuthContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { Loader } from "@mantine/core";
-import { Subject } from "../../../utils/types";
+import { Subject, SubjectQuestionJoin } from "../../../utils/types";
 import { PostgrestError } from "@supabase/supabase-js";
 import { notifications } from "@mantine/notifications";
 import { getSupabaseErrorMessage } from "../../../utils/getErrorMessage";
@@ -16,7 +16,7 @@ interface SubjectPropsProps {}
 const SubjectProps: FC<SubjectPropsProps> = ({}) => {
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
-  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [subjects, setSubjects] = useState<SubjectQuestionJoin[]>([]);
 
   const fetchSubjects = async () => {
     setLoading(true);
@@ -28,22 +28,25 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
         .eq("email", currentUser?.email);
 
       if (fetchUserErr) {
-        console.log(" fetch user error in fetch subj", fetchUserErr);
+        console.log("fetch user error in fetch subj", fetchUserErr);
         throw fetchUserErr;
       }
 
-      const { data: fetchSubjectsData, error: fetchSubjectsError } =
+      const { data: subjectAndQuestionsData, error: subjectAndQuestionsError } =
         await supabase
-          .from("subjects")
-          .select("*")
+          .from<"subjects", SubjectQuestionJoin>("subjects")
+          .select("*, questions(*)")
           .eq("org_id", user[0].org_id);
 
-      if (fetchSubjectsError) {
-        console.log("fetch subjects error in fetch subj", fetchSubjectsError);
-        throw fetchSubjectsError;
+      if (subjectAndQuestionsError) {
+        console.log(
+          "fetch subjects error in fetch subj",
+          subjectAndQuestionsError
+        );
+        throw subjectAndQuestionsError;
       }
 
-      setSubjects(fetchSubjectsData as Subject[]);
+      setSubjects(subjectAndQuestionsData as SubjectQuestionJoin[]);
     } catch (error: PostgrestError | any) {
       console.log("error in fetch subjects", error);
       notifications.show({
@@ -58,17 +61,14 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
   };
 
   const addSubject = async (subject: Subject) => {
-    const { data: insertedSubject, error: newSubjectInsertError } =
-      await supabase.from("subjects").insert(subject);
+    const { error: newSubjectInsertError } = await supabase
+      .from("subjects")
+      .insert(subject);
 
     if (newSubjectInsertError) {
       console.log("error in adding subject", newSubjectInsertError);
       throw newSubjectInsertError;
     }
-
-    // if (insertedSubject) {
-    //   setSubjects((prev) => [...prev, insertedSubject[0]]);
-    // }
 
     fetchSubjects();
   };
@@ -96,8 +96,8 @@ const SubjectProps: FC<SubjectPropsProps> = ({}) => {
       </div>
 
       <div className="pt-12 pb-6 flex justify-center">
-        {/* list of subjects with name, no of modules and total questions and clicking it takes to questions filtered with that subject and nice colours with hovering */}
-        {/* {loading ? <Loader /> : <SubjectList subjects={subjects} />} */}
+        {/* list of subjects with name, no of modules and total questions and clicking it takes to questions filtered with that subject */}
+
         {loading ? <Loader /> : <SubjectList subjects={subjects} />}
       </div>
     </div>

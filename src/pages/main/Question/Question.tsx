@@ -3,11 +3,11 @@ import DisplayQuestions from "../../../components/questions/DisplayQuestions";
 import QuestionHeader from "../../../components/questions/QuestionHeader";
 import SkeletonLoader from "../../../components/ui/SkeletonLoader";
 import { useAuth } from "../../../firebase/contexts/AuthContext";
-import { mockQuestions } from "../../../mockdata/QuestionsMockdata";
 import { supabase } from "../../../supabase/supabaseClient";
 import {
   SubjectQuestionJoin,
   User,
+  QuestionAuthorJoin,
 } from "../../../utils/types";
 import { LayoutType } from "../../../utils/types";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -19,7 +19,6 @@ interface QuestionProps {}
 
 const Question: FC<QuestionProps> = ({}) => {
   const { currentUser } = useAuth();
-  // const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [subjectsWithQuestions, setSubjectsWithQuestions] = useState<
     SubjectQuestionJoin[]
   >([]);
@@ -33,6 +32,20 @@ const Question: FC<QuestionProps> = ({}) => {
       layoutType === LayoutType.Grid ? LayoutType.List : LayoutType.Grid
     );
   };
+
+  /**
+   * START: select question logic
+   * */
+  const [selectedQuestion, setSelectedQuestion] =
+    useState<QuestionAuthorJoin | null>(null);
+
+  const handleBack = () => {
+    setSelectedQuestion(null);
+  };
+
+  /**
+   * END: select question logic
+   * */
 
   const fetchUser_Questions_Subjects = async () => {
     setLoading(true);
@@ -53,15 +66,14 @@ const Question: FC<QuestionProps> = ({}) => {
       const { data: subjectAndQuestionsData, error: subjectAndQuestionsError } =
         await supabase
           .from<"subjects", SubjectQuestionJoin>("subjects")
-          .select("*, questions(*)")
+          .select("*, questions(*, author_id(email, username))")
           .eq("org_id", userDetails?.[0].org_id);
 
       if (subjectAndQuestionsError) {
         throw subjectAndQuestionsError;
       }
 
-      // console.log(subjectAndQuestionsData);
-      // setQuestions(subjectAndQuestionsData.flatMap((s) => s.questions));
+      console.log(subjectAndQuestionsData);
       setSubjectsWithQuestions(
         subjectAndQuestionsData as SubjectQuestionJoin[]
       );
@@ -97,13 +109,15 @@ const Question: FC<QuestionProps> = ({}) => {
   return (
     <>
       <div className="flex flex-col pt-2 pb-4 px-2 max-w-5xl m-auto ">
-        <QuestionHeader
-          layoutType={layoutType}
-          toggleLayout={toggleLayout}
-          subjects={subjectsWithQuestions}
-          user={user}
-          fetchUser_Questions_Subjects={fetchUser_Questions_Subjects}
-        />
+        {!selectedQuestion && (
+          <QuestionHeader
+            layoutType={layoutType}
+            toggleLayout={toggleLayout}
+            subjects={subjectsWithQuestions}
+            user={user}
+            fetchUser_Questions_Subjects={fetchUser_Questions_Subjects}
+          />
+        )}
         <div>
           {loading ? (
             Array(10)
@@ -115,6 +129,11 @@ const Question: FC<QuestionProps> = ({}) => {
               ))
           ) : (
             <DisplayQuestions
+              selectQuestion={{
+                selectedQuestion,
+                setSelectedQuestion,
+                handleBack,
+              }}
               layoutType={layoutType}
               subjectsWithQuestions={subjectsWithQuestions}
             />

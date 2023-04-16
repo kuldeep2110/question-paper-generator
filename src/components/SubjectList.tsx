@@ -1,45 +1,29 @@
 import { FC } from "react";
-import { SimpleGrid } from "@mantine/core";
-import { Subject } from "../utils/types";
+import { SubjectQuestionJoin } from "../utils/types";
+import ArrowIcon from "./ui/ArrowIcon";
 
 interface SubjectListProps {
-  subjects: Subject[];
+  subjects: SubjectQuestionJoin[];
 }
-
 const SubjectList: FC<SubjectListProps> = ({ subjects }) => {
   return (
-    <div className="w-full max-w-[1200px] mx-auto p-8 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div className="container mx-auto px-4 py-12 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {subjects.map((subject) => (
         <div
           key={subject.id}
-          className="bg-gray-700 hover:bg-gray-600 shadow-lg rounded-lg cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1"
+          className="bg-gray-700 rounded-lg shadow-lg hover:shadow-xl cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 group"
         >
           <div className="p-6">
-            <h2 className="text-xl font-semibold text-white mb-2">
+            <h2 className="text-2xl font-semibold text-gray-300 mb-2">
               {subject.subject_name}
             </h2>
-            <div className="flex justify-between items-end">
-              <div>
-                <p className="text-sm text-gray-400">
-                  {subject.no_of_modules} Modules
-                </p>
+            <div className="flex justify-between items-center pt-4">
+              <div className="flex flex-col gap-1 text-lg text-gray-300">
+                <p>{subject.no_of_modules} Modules</p>
+                {/* no of q's */}
+                <p>{subject.questions.length} Questions</p>
               </div>
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6 text-white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                  />
-                </svg>
-              </div>
+              <ArrowIcon />
             </div>
           </div>
         </div>
