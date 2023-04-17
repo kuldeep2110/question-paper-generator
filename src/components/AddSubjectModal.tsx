@@ -119,7 +119,23 @@ const AddSubjectModal: FC<AddSubjectModalProps> = ({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <CyanButton>{title}</CyanButton>
+        {/* CYAN BUTTON GIVES FOLLOWING ERROR */}
+        {/* 
+        Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
+
+      Check the render method of `SlotClone`.
+      at CyanButton (http://localhost:5176/src/components/ui/CyanButton.tsx:17:3)
+      at http://localhost:5176/node_modules/.vite/deps/chunk-2CNJBJR7.js?v=77f6c99a:705:11
+      at http://localhost:5176/node_modules/.vite/deps/chunk-2CNJBJR7.js?v=77f6c99a:682:11
+      at http://localhost:5176/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=77f6c99a:59:13
+      at http://localhost:5176/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=77f6c99a:113:11
+      at Provider (http://localhost:5176/node_modules/.vite/deps/chunk-2CNJBJR7.js?v=77f6c99a:796:15)
+      at $5d3850c4d0b4e6c7$export$3ddf2d174ce01153 (http://localhost:5176/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=77f6c99a:80:11)
+      at AddSubjectModal (http://localhost:5176/src/components/AddSubjectModal.tsx:27:3)
+        */}
+        <button className="text-white  shadow-blackA7 bg-cyan-600 hover:bg-cyan-800 inline-flex h-[35px] items-center justify-center rounded-[7px] px-[10px] font-bold leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none transition-all duration-300">
+          {title}
+        </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0" />

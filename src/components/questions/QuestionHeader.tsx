@@ -1,14 +1,24 @@
-import { FC } from "react";
-import { LayoutType, Subject, User } from "../../utils/types";
+import { FC, useState } from "react";
+import { LayoutType, SubjectQuestionJoin, User } from "../../utils/types";
 import CyanButton from "../ui/CyanButton";
 import AddQuestion from "./AddQuestion";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface QuestionHeaderProps {
-  subjects: Subject[];
+  subjects: SubjectQuestionJoin[];
   user: User | null;
   layoutType: LayoutType;
   toggleLayout: () => void;
   fetchUser_Questions_Subjects: () => Promise<void>;
+  filterSubject: (subjectId: string) => void;
 }
 
 const QuestionHeader: FC<QuestionHeaderProps> = ({
@@ -16,13 +26,35 @@ const QuestionHeader: FC<QuestionHeaderProps> = ({
   user,
   toggleLayout,
   layoutType,
+  filterSubject,
   fetchUser_Questions_Subjects,
 }) => {
   return (
     <>
-      <div className="flex flex-col gap-6 md:flex-row justify-between items-center mb-4 font-sans">
+      <div className="flex flex-col gap-6 md:flex-row justify-between items-center pb-2 font-sans">
         <h1 className="text-4xl font-bold">Questions</h1>
         <div className="flex items-center gap-4">
+          <div>
+            <Select
+              onValueChange={(e) => {
+                filterSubject(e);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a Subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Subjects</SelectLabel>
+                  {subjects.map((subject) => (
+                    <SelectItem key={subject.id} value={subject.id!}>
+                      {subject.subject_name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="hidden md:block">
             <CyanButton
               onClick={() => {

@@ -6,6 +6,7 @@ import {
 } from "../../utils/types";
 import QuestionCard from "./QuestionCard";
 import QuestionDetails from "./QuestionDetails";
+import { useSearchParams } from "react-router-dom";
 
 type DisplayQuestionsProps = {
   subjectsWithQuestions: SubjectQuestionJoin[];
@@ -31,8 +32,22 @@ const DisplayQuestions: FC<DisplayQuestionsProps> = ({
       {selectedQuestion ? (
         <QuestionDetails question={selectedQuestion} onBack={handleBack} />
       ) : (
-        <div className="pt-6">
-          {layoutType === LayoutType.Grid ? (
+        <div className="pt-2">
+          {subjectsWithQuestions.flatMap((subject) => subject.questions)
+            .length === 0 ? (
+            <div className="flex flex-col p-10 md:p-32 items-center justify-center h-full">
+              <div className="text-2xl font-semibold text-gray-500">
+                No questions found
+              </div>
+              <div className="text-gray-500">
+                <p>
+                  You can add questions by clicking the{" "}
+                  <span className="underline text-cyan-500">Add Question</span>{" "}
+                  button above
+                </p>
+              </div>
+            </div>
+          ) : layoutType === LayoutType.Grid ? (
             /**
              * Render questions as grid items
              */

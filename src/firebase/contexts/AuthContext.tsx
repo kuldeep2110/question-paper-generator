@@ -32,7 +32,7 @@ export const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<FirebaseUser | undefined>();
   const [loading, setLoading] = useState(true);
 
-  console.log("currentUser", currentUser);
+  // console.log("currentUser", currentUser);
 
   function login(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password);

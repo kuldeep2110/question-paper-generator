@@ -15,7 +15,6 @@ export interface Subject {
 }
 
 export interface SubjectQuestionJoin extends Subject {
-  id: string;
   questions: QuestionAuthorJoin[];
 }
 

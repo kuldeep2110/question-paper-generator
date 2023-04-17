@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { QuestionAuthorJoin } from "../../utils/types";
 import { format } from "date-fns";
+import CyanButton from "../ui/CyanButton";
 
 type QuestionDetailsProps = {
   question: QuestionAuthorJoin;
@@ -20,16 +21,11 @@ const QuestionDetails: FC<QuestionDetailsProps> = ({ question, onBack }) => {
 
   const formattedDate = format(new Date(created_at!), "MMMM d, yyyy");
 
-  console.log("AUTHOR: ===", author);
-
   return (
     <div className="flex flex-col min-h-screen bg-gray-800 text-gray-300">
       <div className="p-4 shadow-lg flex justify-between items-center border-b">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <button
-          className="text-cyan-200 hover:text-cyan-400 focus:outline-none hover:bg-gray-600 rounded-lg p-2"
-          onClick={onBack}
-        >
+        <h1 className="text-3xl font-semibold">{title}</h1>
+        <CyanButton onClick={onBack}>
           {/* <ArrowIcon /> */}
           <div className="flex items-center gap-1">
             <i>
@@ -37,7 +33,7 @@ const QuestionDetails: FC<QuestionDetailsProps> = ({ question, onBack }) => {
             </i>
             <span>Go Back</span>
           </div>
-        </button>
+        </CyanButton>
       </div>
       <div className="flex-grow p-4">
         <div className="flex items-center justify-center">
@@ -57,7 +53,7 @@ const QuestionDetails: FC<QuestionDetailsProps> = ({ question, onBack }) => {
           <div className="text-lg font-medium leading-loose">
             <p>{questionValue}</p>
           </div>
-          <div className="flex text-gray-300 mt-4 font-medium">
+          <div className="flex text-gray-300 mt-4 font-medium items-center justify-start">
             <p className="mr-4 bg-cyan-700 p-2 rounded-2xl">Module: {module}</p>
             <p className="bg-cyan-700 p-2 rounded-2xl">Marks: {marks}</p>
           </div>

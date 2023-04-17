@@ -14,6 +14,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { notifications } from "@mantine/notifications";
 import { getSupabaseErrorMessage } from "../../../utils/getErrorMessage";
 import { IconX } from "@tabler/icons-react";
+import { useSearchParams } from "react-router-dom";
 
 interface QuestionProps {}
 
@@ -26,6 +27,7 @@ const Question: FC<QuestionProps> = ({}) => {
   const [loading, setLoading] = useState(false);
 
   const [layoutType, setLayoutType] = useState<LayoutType>(LayoutType.List);
+  const [subjectFilterId, setSubjectFilterId] = useState<string | null>(null);
 
   const toggleLayout = () => {
     setLayoutType(
@@ -47,6 +49,14 @@ const Question: FC<QuestionProps> = ({}) => {
    * END: select question logic
    * */
 
+  /**
+   * subject query params
+   */
+
+  // query search params for subject
+  const [searchParams] = useSearchParams();
+  const subjectParam = searchParams.get("subject");
+
   const fetchUser_Questions_Subjects = async () => {
     setLoading(true);
     try {
@@ -65,7 +75,7 @@ const Question: FC<QuestionProps> = ({}) => {
 
       const { data: subjectAndQuestionsData, error: subjectAndQuestionsError } =
         await supabase
-          .from<"subjects", SubjectQuestionJoin>("subjects")
+          .from("subjects")
           .select("*, questions(*, author_id(email, username))")
           .eq("org_id", userDetails?.[0].org_id);
 
@@ -73,10 +83,21 @@ const Question: FC<QuestionProps> = ({}) => {
         throw subjectAndQuestionsError;
       }
 
-      console.log(subjectAndQuestionsData);
-      setSubjectsWithQuestions(
-        subjectAndQuestionsData as SubjectQuestionJoin[]
-      );
+      if (subjectParam) {
+        const subject = subjectAndQuestionsData?.filter(
+          (subject) =>
+            subject.subject_name.toLowerCase() === subjectParam.toLowerCase()
+        );
+
+        if (subject) {
+          setSubjectsWithQuestions(subject as SubjectQuestionJoin[]);
+        }
+      } else {
+        setSubjectsWithQuestions(
+          subjectAndQuestionsData as SubjectQuestionJoin[]
+        );
+      }
+
       setUser(userDetails?.[0] as User);
     } catch (error: PostgrestError | any) {
       console.log("questions page fetch error", error);
@@ -112,6 +133,7 @@ const Question: FC<QuestionProps> = ({}) => {
         {!selectedQuestion && (
           <QuestionHeader
             layoutType={layoutType}
+            filterSubject={setSubjectFilterId}
             toggleLayout={toggleLayout}
             subjects={subjectsWithQuestions}
             user={user}
