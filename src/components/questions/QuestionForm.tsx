@@ -31,8 +31,10 @@ const QuestionForm: FC<QuestionFormProps> = ({
   const [titleValue, settitleValue] = useState<string>("");
   const [questionValue, setquestionValue] = useState<string>("");
   const [fileValue, setfileValue] = useState<File | null>(null);
-  const [subjectValue, setsubjectValue] = useState<string | null>(null);
-  const [moduleValue, setmoduleValue] = useState<string | null>(null);
+  const [subjectValue, setsubjectValue] = useState<string | null>(
+    subjects.length === 1 ? subjects[0].id! : null
+  );
+  const [moduleValue, setmoduleValue] = useState<string | null>("");
   const [marksValue, setmarksValue] = useState<number | "">(1);
 
   const [loading, setLoading] = useState(false);
@@ -187,7 +189,7 @@ const QuestionForm: FC<QuestionFormProps> = ({
       await fetchUser_Questions_Subjects();
     } catch (error: PostgrestError | StorageError | any) {
       notifications.show({
-        title: "Cannot add question",
+        title: "Something went wrong, Cannot add question",
         message: getSupabaseErrorMessage(error),
         color: "red",
         icon: <IconX size="1.1rem" />,
@@ -256,7 +258,7 @@ const QuestionForm: FC<QuestionFormProps> = ({
                 </label>
               }
               withAsterisk
-              placeholder="Select subject"
+              placeholder="Select Subject"
               data={subjects.map((subject) => {
                 return { label: subject.subject_name, value: subject.id! };
               })}
@@ -278,12 +280,13 @@ const QuestionForm: FC<QuestionFormProps> = ({
               data={
                 subjectValue
                   ? NumberToArray(
-                      SelectSubject(subjects, subjectValue)!.no_of_modules
+                      SelectSubject(subjects, subjectValue)?.no_of_modules
                     )
                   : []
               }
               value={moduleValue}
               onChange={setmoduleValue}
+              disabled={!subjectValue}
             />
           </div>
 

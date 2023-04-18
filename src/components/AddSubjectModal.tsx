@@ -87,6 +87,26 @@ const AddSubjectModal: FC<AddSubjectModalProps> = ({
         throw fetchUserErr;
       }
 
+      const { data: fetchedSubject, error: fetchSubjectErr } = await supabase
+        .from("subjects")
+        .select("subject_name")
+        .eq("subject_name", subname);
+
+      if (fetchSubjectErr) {
+        console.log("fetch subject error in add subject", fetchSubjectErr);
+        throw fetchSubjectErr;
+      }
+
+      if (fetchedSubject && fetchedSubject.length > 0) {
+        notifications.show({
+          title: "Error!",
+          message: "Subject already exists",
+          color: "red",
+          icon: <IconX />,
+        });
+        return;
+      }
+
       const subject: Subject = {
         subject_name: subname,
         no_of_modules: no_of_modules,

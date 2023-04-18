@@ -1,12 +1,11 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import {
   LayoutType,
-  SubjectQuestionJoin,
   QuestionAuthorJoin,
+  SubjectQuestionJoin,
 } from "../../utils/types";
 import QuestionCard from "./QuestionCard";
 import QuestionDetails from "./QuestionDetails";
-import { useSearchParams } from "react-router-dom";
 
 type DisplayQuestionsProps = {
   subjectsWithQuestions: SubjectQuestionJoin[];

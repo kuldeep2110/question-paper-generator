@@ -16,7 +16,7 @@ const SubjectList: FC<SubjectListProps> = ({ subjects }) => {
           key={subject.id}
           className="bg-gray-700 rounded-lg shadow-lg hover:shadow-xl cursor-pointer transition duration-300 ease-in-out transform hover:-translate-y-1 group"
           onClick={() =>
-            navigate(`/questions/?subject=${subject.subject_name}`)
+            navigate(`/questions/${subject.subject_name}`)
           }
         >
           <div className="p-6">

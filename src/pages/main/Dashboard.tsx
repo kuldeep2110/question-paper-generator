@@ -26,7 +26,7 @@ const Dashboard: FC<DashboardProps> = ({}) => {
   return (
     <>
       <h1>Dashboard</h1>
-      <h2>{currentUser?.email}</h2>
+      <h2>You are logged in as: {currentUser?.email}</h2>
       <button onClick={handleLogout}>Log out</button>
     </>
   );

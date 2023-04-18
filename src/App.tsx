@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import AddSubject from "./pages/main/Subject/Subjects";
 import Question from "./pages/main/Question/Question";
 import Generate from "./pages/main/Generate/Generate";
+import SubjectFilteredQuestions from "./pages/main/Question/SubjectFilteredQuestions";
 
 function App() {
   return (
@@ -48,6 +49,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Question />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="questions/:subject"
+            element={
+              <ProtectedRoute>
+                <SubjectFilteredQuestions />
               </ProtectedRoute>
             }
           />
