@@ -1,10 +1,11 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../firebase/contexts/AuthContext";
 import { NavLink, useNavigate } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
+import { motion } from "framer-motion";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", current: true },
@@ -23,6 +24,7 @@ interface NavbarProps {}
 const Navbar: FC<NavbarProps> = ({}) => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState(navigation[0].name);
 
   async function handleLogout() {
     try {
@@ -127,20 +129,36 @@ const Navbar: FC<NavbarProps> = ({}) => {
                       <NavLink
                         key={item.name}
                         to={item.href}
+                        onClick={() => setActiveTab(item.name)}
                         className={({ isActive }) =>
                           classNames(
                             isActive
-                              ? " text-cyan-500 bg-gray-700"
+                              ? " text-cyan-500"
                               : "text-slate-300 hover:text-white hover:bg-gray-700",
-                            "rounded-3xl px-4 py-2 text-sm font-medium tracking-wide"
+                            "rounded-full px-4 py-2 text-sm font-medium tracking-wide relative"
                           )
                         }
                         aria-current={item.current ? "page" : undefined}
                       >
-                        {item.name}
+                        {activeTab === item.name && (
+                          <motion.div
+                            layoutId="active-pill"
+                            className=" bg-gray-700 absolute inset-0 rounded-full"
+                            style={{
+                              borderRadius: "9999px",
+                            }}
+                          />
+                        )}
+                        <span className="relative z-10">{item.name}</span>
                       </NavLink>
                     ))}
                   </div>
+                  {/* <div className="mt-5 flex justify-start">
+                    <motion.div
+                      layoutId="red-dot"
+                      className="w-5 h-5 bg-red-500 rounded-full"
+                    ></motion.div>
+                  </div> */}
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
