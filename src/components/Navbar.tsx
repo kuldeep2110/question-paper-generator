@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -25,6 +25,15 @@ const Navbar: FC<NavbarProps> = ({}) => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(navigation[0].name);
+
+  const nav = window.location.href;
+
+  useEffect(() => {
+    if (nav.includes("questions")) {
+      console.log("yuppppp");
+      setActiveTab("Questions");
+    }
+  }, [nav]);
 
   async function handleLogout() {
     try {
