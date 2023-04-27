@@ -30,8 +30,10 @@ const Navbar: FC<NavbarProps> = ({}) => {
 
   useEffect(() => {
     if (nav.includes("questions")) {
-      console.log("yuppppp");
       setActiveTab("Questions");
+    }
+    if (nav.includes("generate")) {
+      setActiveTab("Generate");
     }
   }, [nav]);
 
@@ -138,7 +140,13 @@ const Navbar: FC<NavbarProps> = ({}) => {
                       <NavLink
                         key={item.name}
                         to={item.href}
-                        onClick={() => setActiveTab(item.name)}
+                        onClick={() => {
+                          setActiveTab(item.name);
+                          // if (item.name === "Generate") {
+                          //   navigate("/generate");
+                          //   window.location.reload();
+                          // }
+                        }}
                         className={({ isActive }) =>
                           classNames(
                             isActive

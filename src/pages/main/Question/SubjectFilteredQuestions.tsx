@@ -102,6 +102,7 @@ const SubjectFilteredQuestions: FC<SubjectFilteredQuestionsProps> = ({}) => {
     <>
       {!selectedQuestion && (
         <QuestionHeader
+        selectedSubject={subjectParam}
           toggleLayout={toggleLayout}
           subjectsWithQuestions={subjectsWithQuestions}
           user={user}

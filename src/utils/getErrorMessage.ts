@@ -27,5 +27,9 @@ export function getSupabaseErrorMessage(error: PostgrestError) {
     return error.details;
   }
 
+  if (error instanceof Error) {
+    return error.message;
+  }
+
   return "An error occurred. Please try again later.";
 }
