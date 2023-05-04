@@ -5,5 +5,6 @@ export const NumberToArray = (n: number | undefined) => {
   for (let i = 1; i <= n; i++) {
     arr.push({ label: `Module ${i}`, value: `${i}` });
   }
+  console.log(arr);
   return arr;
 };

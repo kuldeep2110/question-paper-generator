@@ -70,14 +70,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="generate/:subject"
-            element={
-              <ProtectedRoute>
-                <Generate />
-              </ProtectedRoute>
-            }
-          />
         </Route>
         <Route path="login" element={<LoginPage />} />
         <Route path="*" element={<Error />} />

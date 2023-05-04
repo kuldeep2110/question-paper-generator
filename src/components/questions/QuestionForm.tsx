@@ -279,9 +279,7 @@ const QuestionForm: FC<QuestionFormProps> = ({
               placeholder="Select Module"
               data={
                 subjectValue
-                  ? NumberToArray(
-                      SelectSubject(subjects, subjectValue)?.no_of_modules
-                    )
+                  ? NumberToArray(SelectSubject(subjects, subjectValue)?.no_of_modules)
                   : []
               }
               value={moduleValue}
