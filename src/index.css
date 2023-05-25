@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+header {
+  text-align: center;
+}
+header img {
+  margin: 60px auto;
+  width: 60%;
+  height: auto;
+}
+.box {
+  height: 200px;
+  border: 1px solid black;
+  width: 80%;
+  margin: auto;
+}
+.instructions {
+  text-align: left;
+  border-top: 1px solid black;
+}
+
+table {
+  border-collapse: collapse; /* This makes the table border visible */
+  border-spacing: 0 !important;
+  border: 1px solid black; /* This sets the border width and color */
+  margin: 0 auto; /* This centers the table from left and right */
+  width: 80%;
+}
+td,
+th {
+  font-weight: bold;
+  width: 50%;
+  /* border: 1px solid black; This sets the border width and color for each cell */
+  padding: 10px; /* This sets the cell padding */
+  border-style: solid;
+  border-width: 0;
+  border-color: transparent;
+  outline: none;
+}
+tr:not(:last-child) {
+  line-height: 0;
+}
+.html-to-pdf-btn {
+  background-color: red;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: auto;
+}

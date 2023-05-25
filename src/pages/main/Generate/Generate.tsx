@@ -3,7 +3,7 @@ import { notifications } from "@mantine/notifications";
 import { PostgrestError } from "@supabase/supabase-js";
 import { IconX } from "@tabler/icons-react";
 import { User } from "firebase/auth";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../../firebase/contexts/AuthContext";
 import { supabase } from "../../../supabase/supabaseClient";
 import { getSupabaseErrorMessage } from "../../../utils/getErrorMessage";
@@ -17,6 +17,10 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import CyanButton from "../../../components/ui/CyanButton";
+
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import HTMLToPDFConverter from "./HtmlToPdf";
 
 interface GenerateProps {}
 
@@ -244,6 +248,22 @@ const Generate: FC<GenerateProps> = ({}) => {
     );
   }
 
+  // const contentRef = useRef<HTMLDivElement>(null);
+
+  // const handleConvertToPDF = () => {
+  //   if (contentRef.current) {
+  //     html2canvas(contentRef.current).then((canvas) => {
+  //       const imgData = canvas.toDataURL("image/png");
+  //       const pdf = new jsPDF();
+  //       const imgProps = pdf.getImageProperties(imgData);
+  //       const pdfWidth = pdf.internal.pageSize.getWidth();
+  //       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  //       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //       pdf.save("converted.pdf");
+  //     });
+  //   }
+  // };
+
   return (
     <>
       {!subjectParam ? (
@@ -275,98 +295,104 @@ const Generate: FC<GenerateProps> = ({}) => {
           </div>
         </>
       ) : (
-        <div className="container mx-auto  h-auto">
-          <div>
-            <div className="pt-4 flex items-center justify-between">
-              <h1 className="text-4xl font-bold">Generate</h1>
-              <div className="flex gap-2 items-center">
-                <Select onValueChange={(e) => setSelectedModule(e)}>
-                  <SelectTrigger className="w-[300px]">
-                    <SelectValue placeholder="Select Module" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {numberToArray(selectedSubjectData?.no_of_modules!).map(
-                      (module) => (
-                        <SelectItem key={module} value={`${module}`}>
-                          Module {module}
-                        </SelectItem>
-                      )
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-          {/* Display the number of questions of particular marks */}
-          {!selectedModule ? (
-            <div className="pt-10 flex justify-center items-center">
-              <div className="w-[300px]">
-                <h1 className="text-center">Select a module</h1>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="pt-10 flex justify-center items-center">
-                <div className="w-[600px]">
-                  {filteredQuestions && (
-                    <div className="mt-8">
-                      <h2 className="text-xl font-semibold text-white text-center mb-10">
-                        Questions for Module {selectedModule}
-                      </h2>
-                      {Object.entries(
-                        filteredQuestions.number_of_questions_of_marks
-                      ).map(([mark, count]) => (
-                        <div
-                          key={mark}
-                          className="flex justify-center items-center mt-4 gap-14"
-                        >
-                          <span className="mr-2 text-gray-300">
-                            Marks: {mark}
-                          </span>
-                          <span className="mr-2 text-gray-300">
-                            Count: {count}
-                          </span>
-                          <button
-                            className="px-3 py-2 mr-2 border border-gray-300 rounded text-gray-300 hover:bg-gray-600 focus:outline-none"
-                            onClick={() =>
-                              handleSelectQuestions(
-                                parseInt(selectedModule),
-                                parseInt(mark),
-                                -1
-                              )
-                            }
-                          >
-                            -
-                          </button>
-                          <span className="text-gray-300">
-                            Selected:{" "}
-                            {
-                              filteredQuestions.selected_questions_of_marks[
-                                mark as any
-                              ]
-                            }
-                          </span>
-                          <button
-                            className="px-3 py-2 ml-2 border border-gray-300 rounded text-gray-300 hover:bg-gray-600 focus:outline-none"
-                            onClick={() =>
-                              handleSelectQuestions(
-                                parseInt(selectedModule),
-                                parseInt(mark),
-                                1
-                              )
-                            }
-                          >
-                            +
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+        <>
+          <div className="container mx-auto  h-auto">
+            <div>
+              <div className="pt-4 flex items-center justify-between">
+                <h1 className="text-4xl font-bold">Generate</h1>
+                <div className="flex gap-2 items-center">
+                  <Select onValueChange={(e) => setSelectedModule(e)}>
+                    <SelectTrigger className="w-[300px]">
+                      <SelectValue placeholder="Select Module" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {numberToArray(selectedSubjectData?.no_of_modules!).map(
+                        (module) => (
+                          <SelectItem key={module} value={`${module}`}>
+                            Module {module}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+            {/* Display the number of questions of particular marks */}
+            {!selectedModule ? (
+              <div className="pt-10 flex justify-center items-center">
+                <div className="w-[300px]">
+                  <h1 className="text-center">Select a module</h1>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="pt-10 flex justify-center items-center">
+                  <div className="w-[600px]">
+                    {filteredQuestions && (
+                      <div className="mt-8">
+                        <h2 className="text-xl font-semibold text-white text-center mb-10">
+                          Questions for Module {selectedModule}
+                        </h2>
+                        {Object.entries(
+                          filteredQuestions.number_of_questions_of_marks
+                        ).map(([mark, count]) => (
+                          <div
+                            key={mark}
+                            className="flex justify-center items-center mt-4 gap-14"
+                          >
+                            <span className="mr-2 text-gray-300">
+                              Marks: {mark}
+                            </span>
+                            <span className="mr-2 text-gray-300">
+                              Count: {count}
+                            </span>
+                            <button
+                              className="px-3 py-2 mr-2 border border-gray-300 rounded text-gray-300 hover:bg-gray-600 focus:outline-none"
+                              onClick={() =>
+                                handleSelectQuestions(
+                                  parseInt(selectedModule),
+                                  parseInt(mark),
+                                  -1
+                                )
+                              }
+                            >
+                              -
+                            </button>
+                            <span className="text-gray-300">
+                              Selected:{" "}
+                              {
+                                filteredQuestions.selected_questions_of_marks[
+                                  mark as any
+                                ]
+                              }
+                            </span>
+                            <button
+                              className="px-3 py-2 ml-2 border border-gray-300 rounded text-gray-300 hover:bg-gray-600 focus:outline-none"
+                              onClick={() =>
+                                handleSelectQuestions(
+                                  parseInt(selectedModule),
+                                  parseInt(mark),
+                                  1
+                                )
+                              }
+                            >
+                              +
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* <button onClick={handleConvertToPDF}>Convert to PDF</button> */}
+
+                <HTMLToPDFConverter />
+              </>
+            )}
+          </div>
+        </>
       )}
     </>
   );
